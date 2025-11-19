@@ -157,7 +157,7 @@ matched = bank.merge(ledger, on='key')
 
 accordion = st.expander("6️⃣ Asesoría Estratégica (Monte Carlo)", expanded=False)
 with accordion:
-    st.code(
+    st.code("""
 import numpy as np
 base_cash = 100000
 n_sim = 1000
@@ -171,7 +171,7 @@ for i in range(n_sim):
         gasto = np.random.normal(8000,1500)
         cash += ingreso - gasto
         results[i,m] = cash
-)
+""")
 
 accordion = st.expander("7️⃣ Dashboards Inteligentes", expanded=False)
 with accordion:
