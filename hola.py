@@ -14,6 +14,6 @@ df = pd.DataFrame({
 
 df["utilidad"] = df["ingresos"] - df["gastos"]
 
-fig = px.line(df, x="fecha", y=["ingresos", "gastos", "utilidad"],
+fig = st.line_chart(df, x="fecha", y=["ingresos", "gastos", "utilidad"],
               title="Dashboard financiero")
 st.plotly_chart(fig, use_container_width=True)
