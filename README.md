@@ -1,19 +1,21 @@
-# :earth_americas: GDP dashboard template
+# 📊 Consultoría Financiera con Inteligencia Artificial  
+Landing page interactiva desarrollada en **Streamlit** que presenta servicios de consultoría financiera impulsados por Inteligencia Artificial, junto con ejemplos reales de código utilizados en cada solución.
 
-A simple Streamlit app showing the GDP of different countries in the world.
+## 🚀 Características
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gdp-dashboard-template.streamlit.app/)
+- Landing page moderna construida con Streamlit + HTML/CSS.
+- Sección detallada de servicios con código funcional en Python:
+  - Análisis financiero automatizado
+  - Modelos de predicción financiera
+  - Optimización de presupuestos
+  - Gestión de riesgos con IA
+  - Automatización financiera
+  - Asesoría estratégica
+  - Dashboards inteligentes
+- 100% compatible con **Streamlit Cloud**, **Render**, **HuggingFace Spaces** y hosting desde GitHub.
+- Estilo visual tipo landing page profesional.
 
-### How to run it on your own machine
+---
 
-1. Install the requirements
+## 📦 Estructura del Proyecto
 
-   ```
-   $ pip install -r requirements.txt
-   ```
-
-2. Run the app
-
-   ```
-   $ streamlit run streamlit_app.py
-   ```
