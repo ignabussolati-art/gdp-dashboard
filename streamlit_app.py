@@ -1,143 +1,203 @@
 import streamlit as st
+from pathlib import Path
 
-# ---- CONFIGURACIÓN ----
 st.set_page_config(
     page_title="Consultoría Financiera con IA",
     page_icon="📊",
     layout="wide"
 )
 
-# ---- ESTILOS CSS (para que parezca una landing real) ----
-st.markdown("""
-<style>
-body {
-    background-color: #0f172a;
-    color: white;
-}
-h1, h2, h3 {
-    color: white;
-}
-.section {
-    background: #1e293b;
-    padding: 40px;
-    border-radius: 18px;
-    margin-bottom: 40px;
-    border: 1px solid #334155;
-}
-.code-block {
-    background: #0f172a;
-    padding: 16px;
-    border-radius: 12px;
-    overflow-x: auto;
-    border: 1px solid #334155;
-    color: #e2e8f0;
-}
-</style>
-""", unsafe_allow_html=True)
+# ---- Estilos CSS ----
+def load_css():
+    st.markdown("""
+    <style>
+    body {
+        background-color: #f6f8fa;
+    }
+    .hero {
+        padding: 80px 20px;
+        text-align: center;
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        color: white;
+        border-radius: 20px;
+        margin-bottom: 40px;
+    }
+    .card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+    }
+    code {
+        font-size: 14px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-# ---- HERO SECTION ----
+load_css()
+
+# ---- HERO ----
 st.markdown("""
-<div style="text-align:center; padding: 60px 0;">
-    <h1 style="font-size:3rem; font-weight:800;">Consultoría Financiera con Inteligencia Artificial</h1>
-    <p style="font-size:1.3rem; color:#cbd5e1;">
-        Optimiza tus finanzas empresariales con análisis automatizados, predicciones avanzadas y dashboards inteligentes.
+<div class="hero">
+    <h1 style="font-size: 42px; font-weight: 900;">Consultoría Financiera impulsada por IA</h1>
+    <p style="font-size: 22px; margin-top: 10px;">
+        Optimiza tus decisiones financieras con análisis automatizado, modelos predictivos y dashboards inteligentes.
     </p>
 </div>
 """, unsafe_allow_html=True)
 
-# ---- SERVICIOS ----
-st.header("Servicios impulsados por IA")
-st.write("### A continuación, los servicios detallados con el código que los implementa:")
+# ---- Beneficios ----
+st.header("🔍 ¿Qué obtiene tu empresa?")
+col1, col2, col3 = st.columns(3)
 
-# Diccionario de servicios y código asociado
-servicios = {
-    "1. Análisis Financiero Automatizado": 
-def analizar_finanzas(df):
-    revenue = df[df['cuenta']=='ventas']['monto'].sum()
-    cogs = df[df['cuenta']=='costo_ventas']['monto'].sum()
-    gastos = df[df['cuenta']=='gastos_operativos']['monto'].sum()
-    margen = (revenue - cogs) / revenue if revenue else 0
-    return {
-        'margen_bruto': margen,
-        'ebitda': revenue - cogs - gastos
-    }
-,
+with col1:
+    st.markdown("<div class='card'> <h3>Análisis en segundos</h3> Identifica oportunidades y anomalías automáticamente. </div>", unsafe_allow_html=True)
 
-    "2. Modelos de Predicción Financiera": """
-from sklearn.linear_model import LinearRegression
+with col2:
+    st.markdown("<div class='card'> <h3>Predicciones precisas</h3> Modelos ML para ventas, flujo de caja y demanda. </div>", unsafe_allow_html=True)
 
-def predecir_flujo(df):
-    df['lag_1'] = df['ventas'].shift(1)
-    df = df.dropna()
-    X = df[['lag_1']]
-    y = df['ventas']
-    model = LinearRegression().fit(X, y)
-    pred = model.predict([[df['ventas'].iloc[-1]]])[0]
-    return pred
-""",
+with col3:
+    st.markdown("<div class='card'> <h3>Automatización total</h3> Reportes, conciliaciones y dashboards inteligentes. </div>", unsafe_allow_html=True)
 
-    "3. Optimización de Presupuestos": """
+st.write("---")
+
+# ---- Servicios con Código ----
+st.header("🧠 Servicios con IA + Código Real en Python")
+
+accordion = st.expander("1️⃣ Análisis Financiero Automatizado", expanded=False)
+with accordion:
+    st.code("""
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import IsolationForest
+
+df = pd.read_csv('estados_financieros.csv', parse_dates=['fecha'])
+
+revenue = df[df['cuenta']=='ventas']['monto'].sum()
+cogs = df[df['cuenta']=='costo_ventas']['monto'].sum()
+operating = df[df['cuenta']=='gastos_operativos']['monto'].sum()
+
+kpis = {
+    "margen_bruto": (revenue - cogs) / revenue,
+    "ebitda": revenue - cogs - operating
+}
+
+# Detección de anomalías
+trans = df.groupby(['fecha'])['monto'].sum().reset_index()
+model = IsolationForest(contamination=0.01, random_state=42)
+trans['anomaly'] = model.fit_predict(trans[['monto']])
+""")
+
+accordion = st.expander("2️⃣ Predicción Financiera (Ventas / Cashflow)", expanded=False)
+with accordion:
+    st.code("""
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import TimeSeriesSplit
+
+sales = pd.read_csv('ventas.csv', parse_dates=['fecha']).set_index('fecha')
+
+sales['lag_7'] = sales['ventas'].shift(7)
+sales['ma_14'] = sales['ventas'].rolling(14).mean()
+sales = sales.dropna()
+
+X = sales[['lag_7','ma_14']]
+y = sales['ventas']
+
+model = RandomForestRegressor(n_estimators=100)
+model.fit(X, y)
+prediction = model.predict(X.tail(1))[0]
+""")
+
+accordion = st.expander("3️⃣ Optimización de Presupuestos", expanded=False)
+with accordion:
+    st.code("""
 from pulp import LpProblem, LpVariable, LpMinimize, lpSum
 
-def optimizar_presupuesto(costos, requeridos, max_total):
-    prob = LpProblem('BudgetOpt', LpMinimize)
-    alloc = {a: LpVariable(a, lowBound=requeridos[a]) for a in costos}
-    prob += lpSum([costos[a]*alloc[a] for a in costos])
-    prob += lpSum([alloc[a] for a in costos]) <= max_total
-    prob.solve()
-    return {a: alloc[a].value() for a in costos}
-""",
+areas = ['marketing','ventas','ops']
+costs = {'marketing':1.0, 'ventas':1.2, 'ops':0.8}
+min_req = {'marketing':1000, 'ventas':2000, 'ops':1500}
+max_total = 6000
 
-    "4. Gestión de Riesgos con IA": """
+prob = LpProblem('Optimizar', LpMinimize)
+alloc = {a: LpVariable(a, lowBound=min_req[a]) for a in areas}
+
+prob += lpSum(costs[a]*alloc[a] for a in areas)
+prob += lpSum(alloc[a] for a in areas) <= max_total
+prob.solve()
+""")
+
+accordion = st.expander("4️⃣ Gestión de Riesgos (Credit Score)", expanded=False)
+with accordion:
+    st.code("""
+from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingClassifier
+import pandas as pd
 
-def score_riesgo(df):
-    X = df[['edad','ingresos','deuda_ratio']]
-    y = df['default']
-    model = GradientBoostingClassifier().fit(X, y)
-    df['score'] = model.predict_proba(X)[:,1]
-    return df[['cliente_id','score']]
-""",
+df = pd.read_csv('clientes.csv')
+X = df[['edad','ingresos','deuda_ratio']]
+y = df['default']
 
-    "5. Automatización Financiera": """
-def conciliar(banco, libro):
-    banco['key'] = banco['monto'].round(2)
-    libro['key'] = libro['monto'].round(2)
-    merged = banco.merge(libro, on='key')
-    return merged
-""",
+model = GradientBoostingClassifier()
+model.fit(X, y)
+df['score'] = model.predict_proba(X)[:,1]
+""")
 
-    "6. Asesoría Estratégica con IA": """
+accordion = st.expander("5️⃣ Automatización Financiera", expanded=False)
+with accordion:
+    st.code("""
+bank = pd.read_csv('banco.csv')
+ledger = pd.read_csv('libro.csv')
+
+bank['key'] = bank['monto'].round(2).astype(str)
+ledger['key'] = ledger['monto'].round(2).astype(str)
+
+matched = bank.merge(ledger, on='key')
+""")
+
+accordion = st.expander("6️⃣ Asesoría Estratégica (Monte Carlo)", expanded=False)
+with accordion:
+    st.code("""
 import numpy as np
+base_cash = 100000
+n_sim = 1000
+horizon = 12
 
-def simular_escenarios(base, meses=12):
-    proy = []
-    cash = base
-    for m in range(meses):
+results = np.zeros((n_sim,horizon))
+for i in range(n_sim):
+    cash = base_cash
+    for m in range(horizon):
         ingreso = np.random.normal(10000,2000)
         gasto = np.random.normal(8000,1500)
         cash += ingreso - gasto
-        proy.append(cash)
-    return proy
-""",
+        results[i,m] = cash
+""")
 
-    "7. Dashboards Financieros Inteligentes": """
+accordion = st.expander("7️⃣ Dashboards Inteligentes", expanded=False)
+with accordion:
+    st.code("""
+from dash import Dash, dcc, html
 import plotly.express as px
 
-def generar_dashboard(df):
-    fig = px.line(df, x='fecha', y='valor', color='kpi')
-    return fig
-"""
-}
+# Para dashboards avanzados fuera de Streamlit
+""")
 
-# ---- Mostrar servicios en bloques ----
-for titulo, codigo in servicios.items():
-    st.markdown(f"<div class='section'><h3>{titulo}</h3>", unsafe_allow_html=True)
-    st.markdown(f"<pre class='code-block'>{codigo}</pre></div>", unsafe_allow_html=True)
+st.write("---")
 
-# ---- FOOTER ----
-st.markdown("""
-<div style="text-align:center; padding:40px; color:#94a3b8;">
-    © 2025 Consultoría Financiera con IA — Todos los derechos reservados.
-</div>
-""", unsafe_allow_html=True)
+# ---- Formulario ----
+st.header("📅 Agenda una Demo Gratis")
+
+with st.form("Demo"):
+    name = st.text_input("Nombre")
+    email = st.text_input("Correo")
+    company = st.text_input("Empresa")
+    needs = st.text_area("¿Qué necesitas?")
+    submitted = st.form_submit_button("Enviar solicitud")
+
+    if submitted:
+        st.success("¡Gracias! Nos contactaremos contigo muy pronto.")
+
+# ---- Footer ----
+st.write("---")
+st.caption("© 2025 Consultoría Financiera con IA — Todos los derechos reservados")
+
