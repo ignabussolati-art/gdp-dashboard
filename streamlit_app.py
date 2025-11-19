@@ -23,7 +23,7 @@ def load_css():
         margin-bottom: 40px;
     }
     .card {
-        background: white;
+        background: #f6f8fa;
         padding: 25px;
         border-radius: 15px;
         box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
