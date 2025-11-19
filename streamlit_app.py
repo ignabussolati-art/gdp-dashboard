@@ -51,7 +51,7 @@ st.write("### A continuación, los servicios detallados con el código que los i
 
 # Diccionario de servicios y código asociado
 servicios = {
-    "1. Análisis Financiero Automatizado": """
+    "1. Análisis Financiero Automatizado": 
 def analizar_finanzas(df):
     revenue = df[df['cuenta']=='ventas']['monto'].sum()
     cogs = df[df['cuenta']=='costo_ventas']['monto'].sum()
@@ -61,7 +61,7 @@ def analizar_finanzas(df):
         'margen_bruto': margen,
         'ebitda': revenue - cogs - gastos
     }
-""",
+,
 
     "2. Modelos de Predicción Financiera": """
 from sklearn.linear_model import LinearRegression
