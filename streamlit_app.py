@@ -1,151 +1,143 @@
 import streamlit as st
-import pandas as pd
-import math
-from pathlib import Path
 
-# Set the title and favicon that appear in the Browser's tab bar.
+# ---- CONFIGURACIÓN ----
 st.set_page_config(
-    page_title='GDP bacon',
-    page_icon=':earth_americas:', # This is an emoji shortcode. Could be a URL too.
+    page_title="Consultoría Financiera con IA",
+    page_icon="📊",
+    layout="wide"
 )
 
-# -----------------------------------------------------------------------------
-# Declare some useful functions.
+# ---- ESTILOS CSS (para que parezca una landing real) ----
+st.markdown("""
+<style>
+body {
+    background-color: #0f172a;
+    color: white;
+}
+h1, h2, h3 {
+    color: white;
+}
+.section {
+    background: #1e293b;
+    padding: 40px;
+    border-radius: 18px;
+    margin-bottom: 40px;
+    border: 1px solid #334155;
+}
+.code-block {
+    background: #0f172a;
+    padding: 16px;
+    border-radius: 12px;
+    overflow-x: auto;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+}
+</style>
+""", unsafe_allow_html=True)
 
-@st.cache_data
-def get_gdp_data():
-    """Grab GDP data from a CSV file.
+# ---- HERO SECTION ----
+st.markdown("""
+<div style="text-align:center; padding: 60px 0;">
+    <h1 style="font-size:3rem; font-weight:800;">Consultoría Financiera con Inteligencia Artificial</h1>
+    <p style="font-size:1.3rem; color:#cbd5e1;">
+        Optimiza tus finanzas empresariales con análisis automatizados, predicciones avanzadas y dashboards inteligentes.
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
-    This uses caching to avoid having to read the file every time. If we were
-    reading from an HTTP endpoint instead of a file, it's a good idea to set
-    a maximum age to the cache with the TTL argument: @st.cache_data(ttl='1d')
-    """
+# ---- SERVICIOS ----
+st.header("Servicios impulsados por IA")
+st.write("### A continuación, los servicios detallados con el código que los implementa:")
 
-    # Instead of a CSV on disk, you could read from an HTTP endpoint here too.
-    DATA_FILENAME = Path(__file__).parent/'data/gdp_data.csv'
-    raw_gdp_df = pd.read_csv(DATA_FILENAME)
+# Diccionario de servicios y código asociado
+servicios = {
+    "1. Análisis Financiero Automatizado": """
+def analizar_finanzas(df):
+    revenue = df[df['cuenta']=='ventas']['monto'].sum()
+    cogs = df[df['cuenta']=='costo_ventas']['monto'].sum()
+    gastos = df[df['cuenta']=='gastos_operativos']['monto'].sum()
+    margen = (revenue - cogs) / revenue if revenue else 0
+    return {
+        'margen_bruto': margen,
+        'ebitda': revenue - cogs - gastos
+    }
+""",
 
-    MIN_YEAR = 1960
-    MAX_YEAR = 2022
+    "2. Modelos de Predicción Financiera": """
+from sklearn.linear_model import LinearRegression
 
-    # The data above has columns like:
-    # - Country Name
-    # - Country Code
-    # - [Stuff I don't care about]
-    # - GDP for 1960
-    # - GDP for 1961
-    # - GDP for 1962
-    # - ...
-    # - GDP for 2022
-    #
-    # ...but I want this instead:
-    # - Country Name
-    # - Country Code
-    # - Year
-    # - GDP
-    #
-    # So let's pivot all those year-columns into two: Year and GDP
-    gdp_df = raw_gdp_df.melt(
-        ['Country Code'],
-        [str(x) for x in range(MIN_YEAR, MAX_YEAR + 1)],
-        'Year',
-        'GDP',
-    )
+def predecir_flujo(df):
+    df['lag_1'] = df['ventas'].shift(1)
+    df = df.dropna()
+    X = df[['lag_1']]
+    y = df['ventas']
+    model = LinearRegression().fit(X, y)
+    pred = model.predict([[df['ventas'].iloc[-1]]])[0]
+    return pred
+""",
 
-    # Convert years from string to integers
-    gdp_df['Year'] = pd.to_numeric(gdp_df['Year'])
+    "3. Optimización de Presupuestos": """
+from pulp import LpProblem, LpVariable, LpMinimize, lpSum
 
-    return gdp_df
+def optimizar_presupuesto(costos, requeridos, max_total):
+    prob = LpProblem('BudgetOpt', LpMinimize)
+    alloc = {a: LpVariable(a, lowBound=requeridos[a]) for a in costos}
+    prob += lpSum([costos[a]*alloc[a] for a in costos])
+    prob += lpSum([alloc[a] for a in costos]) <= max_total
+    prob.solve()
+    return {a: alloc[a].value() for a in costos}
+""",
 
-gdp_df = get_gdp_data()
+    "4. Gestión de Riesgos con IA": """
+from sklearn.ensemble import GradientBoostingClassifier
 
-# -----------------------------------------------------------------------------
-# Draw the actual page
+def score_riesgo(df):
+    X = df[['edad','ingresos','deuda_ratio']]
+    y = df['default']
+    model = GradientBoostingClassifier().fit(X, y)
+    df['score'] = model.predict_proba(X)[:,1]
+    return df[['cliente_id','score']]
+""",
 
-# Set the title that appears at the top of the page.
-'''
-# :earth_americas: GDP dashboard
+    "5. Automatización Financiera": """
+def conciliar(banco, libro):
+    banco['key'] = banco['monto'].round(2)
+    libro['key'] = libro['monto'].round(2)
+    merged = banco.merge(libro, on='key')
+    return merged
+""",
 
-Browse GDP data from the [World Bank Open Data](https://data.worldbank.org/) website. As you'll
-notice, the data only goes to 2022 right now, and datapoints for certain years are often missing.
-But it's otherwise a great (and did I mention _free_?) source of data.
-'''
+    "6. Asesoría Estratégica con IA": """
+import numpy as np
 
-# Add some spacing
-''
-''
+def simular_escenarios(base, meses=12):
+    proy = []
+    cash = base
+    for m in range(meses):
+        ingreso = np.random.normal(10000,2000)
+        gasto = np.random.normal(8000,1500)
+        cash += ingreso - gasto
+        proy.append(cash)
+    return proy
+""",
 
-min_value = gdp_df['Year'].min()
-max_value = gdp_df['Year'].max()
+    "7. Dashboards Financieros Inteligentes": """
+import plotly.express as px
 
-from_year, to_year = st.slider(
-    'Which years are you interested in?',
-    min_value=min_value,
-    max_value=max_value,
-    value=[min_value, max_value])
+def generar_dashboard(df):
+    fig = px.line(df, x='fecha', y='valor', color='kpi')
+    return fig
+"""
+}
 
-countries = gdp_df['Country Code'].unique()
+# ---- Mostrar servicios en bloques ----
+for titulo, codigo in servicios.items():
+    st.markdown(f"<div class='section'><h3>{titulo}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<pre class='code-block'>{codigo}</pre></div>", unsafe_allow_html=True)
 
-if not len(countries):
-    st.warning("Select at least one country")
-
-selected_countries = st.multiselect(
-    'Which countries would you like to view?',
-    countries,
-    ['DEU', 'FRA', 'GBR', 'BRA', 'MEX', 'JPN'])
-
-''
-''
-''
-
-# Filter the data
-filtered_gdp_df = gdp_df[
-    (gdp_df['Country Code'].isin(selected_countries))
-    & (gdp_df['Year'] <= to_year)
-    & (from_year <= gdp_df['Year'])
-]
-
-st.header('GDP over time', divider='gray')
-
-''
-
-st.line_chart(
-    filtered_gdp_df,
-    x='Year',
-    y='GDP',
-    color='Country Code',
-)
-
-''
-''
-
-
-first_year = gdp_df[gdp_df['Year'] == from_year]
-last_year = gdp_df[gdp_df['Year'] == to_year]
-
-st.header(f'GDP in {to_year}', divider='gray')
-
-''
-
-cols = st.columns(4)
-
-for i, country in enumerate(selected_countries):
-    col = cols[i % len(cols)]
-
-    with col:
-        first_gdp = first_year[first_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
-        last_gdp = last_year[last_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
-
-        if math.isnan(first_gdp):
-            growth = 'n/a'
-            delta_color = 'off'
-        else:
-            growth = f'{last_gdp / first_gdp:,.2f}x'
-            delta_color = 'normal'
-
-        st.metric(
-            label=f'{country} GDP',
-            value=f'{last_gdp:,.0f}B',
-            delta=growth,
-            delta_color=delta_color
-        )
+# ---- FOOTER ----
+st.markdown("""
+<div style="text-align:center; padding:40px; color:#94a3b8;">
+    © 2025 Consultoría Financiera con IA — Todos los derechos reservados.
+</div>
+""", unsafe_allow_html=True)
